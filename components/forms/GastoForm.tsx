@@ -52,7 +52,8 @@ export function GastoForm({ obraId, fases, onSubmit }: GastoFormProps) {
   const onFormSubmit = async (data: GastoFormData) => {
     setIsSubmitting(true)
     try {
-      await onSubmit({ ...data, notaFile })
+      // Enviar dados sem notaFile por enquanto (upload requer FormData)
+      await onSubmit(data)
       // Reset form on success
       setNotaFile(null)
     } finally {

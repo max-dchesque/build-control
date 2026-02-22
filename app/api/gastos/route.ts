@@ -34,10 +34,18 @@ export async function POST(request: Request) {
     if (gastoError) throw gastoError
 
     // Atualizar valor gasto da fase
+    const { data: faseAtual, error: faseFetchError } = await supabase
+      .from('fases')
+      .select('spent')
+      .eq('id', fase_id)
+      .single()
+
+    if (faseFetchError) throw faseFetchError
+
     const { data: fase, error: faseError } = await supabase
       .from('fases')
       .update({
-        spent: supabase.raw(`spent + ${amount}`),
+        spent: (faseAtual.spent || 0) + amount,
       })
       .eq('id', fase_id)
       .select()
@@ -46,10 +54,18 @@ export async function POST(request: Request) {
     if (faseError) throw faseError
 
     // Atualizar valor gasto da obra
+    const { data: obraAtual, error: obraFetchError } = await supabase
+      .from('obras')
+      .select('spent')
+      .eq('id', obra_id)
+      .single()
+
+    if (obraFetchError) throw obraFetchError
+
     const { error: obraError } = await supabase
       .from('obras')
       .update({
-        spent: supabase.raw(`spent + ${amount}`),
+        spent: (obraAtual.spent || 0) + amount,
       })
       .eq('id', obra_id)
 
